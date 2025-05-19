@@ -1,4 +1,4 @@
-from agent import route_command
+from chatbot_agent import route_command
 
 def main():
   
@@ -14,7 +14,7 @@ def main():
     response = route_command(user_input)
     print(response)
 
-if __name__ = "__main__":
+if __name__ == "__main__":
   main()
     
 
