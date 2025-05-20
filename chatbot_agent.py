@@ -1,12 +1,12 @@
 import ollama
-from tools import calculator, file_reader, weather
+from tools import calculator, file_reader, weather, opsera_doc_search
 import json
 
 def classify_with_llama3(user_input: str) -> dict: # define function that will take a string as an argument and return a dictionary. 
     # create a multiline f string that feeds a prompt to the ollama3 LLM, telling it to choose between three prompts when given an input. 
     # have it return the file in a specific json format. 
     prompt = f"""
-You are a tool-routing assistant. You must choose one of the following tools: "calculator", "weather", or "file_reader".
+You are a tool-routing assistant. You must choose one of the following tools: "calculator", "weather", "file_reader", or "opsera_doc_search".
 
 Given a user input, respond with only a JSON object in this format:
 {{"tool": "<tool_name>", "argument": "<relevant_text>"}}
@@ -21,11 +21,14 @@ User: "what’s the weather in San Francisco?"
 User: "please read my notes.txt file"
 -> {{"tool": "file_reader", "argument": "notes.txt"}}
 
+User: "what is continuous integration in opsera"
+-> {{"tool": "opsera_doc_search", "argument": "continuous integration in opsera"}}
+
 Now classify this input:
 "{user_input}"
 Respond only with valid JSON.
 """
-# feed the propmt to ollama and store the response. 
+# feed the prompt to ollama and store the response. 
     response = ollama.chat(
         model='llama3',
         messages=[{'role': 'user', 'content': prompt}]
@@ -51,6 +54,8 @@ def route_command(user_input: str) -> str:
         return weather.get_weather(arg)
     elif tool == "file_reader":
         return file_reader.read_file(arg)
+    elif tool == "opsera_doc_search":
+        return opsera_doc_search.search_opsera_docs(arg)
     else:
         return f"Could not route command. Reason: {arg}"
 
